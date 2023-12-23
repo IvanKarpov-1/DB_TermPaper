@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="UI.Views.Product.ProductDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:UI.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="25"
+             mc:Ignorable="d" 
+             d:DesignHeight="656" d:DesignWidth="1280">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBlock}"
+                           BasedOn="{StaticResource MaterialDesignHeadline5TextBlock}">
+                        <Setter Property="Margin" Value="10, 10"/>
+                    </Style>
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBox}"
+                           BasedOn="{StaticResource MaterialDesignTextBoxBase}">
+                        <Setter Property="Margin" Value="10, 5, 0, 0"/>
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}"
+                                         Value="True">
+                                <Setter Property="IsReadOnly"
+                                        Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0"
+                  Grid.Column="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="Назва"/>
+
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           Text="Модель"/>
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           Text="Код"/>
+
+                <TextBlock Grid.Row="3"
+                           Grid.Column="0"
+                           Text="Рік запуску у виробництво"
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Grid.Row="4"
+                           Grid.Column="0"
+                           Text="Кількість за рік"
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Grid.Row="5"
+                           Grid.Column="0"
+                           Text="Відпускна ціна"
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Grid.Row="6"
+                           Grid.Column="0"
+                           Text="Технічні характеристики"
+                           TextWrapping="Wrap"/>
+
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         Text="{Binding Product.Name, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding Product.Model, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Text="{Binding Product.Code, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="3"
+                         Grid.Column="1"
+                         Text="{Binding Product.YearOfLaunch, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap"
+                         MaxLength="4"/>
+
+                <TextBox Grid.Row="4"
+                         Grid.Column="1"
+                         Text="{Binding Product.NumberPerYear, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap"/>
+
+                <TextBox Grid.Row="5"
+                         Grid.Column="1"
+                         Text="{Binding Product.SellingPrice, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap"/>
+
+                <TextBox Grid.Row="6"
+                         Grid.Column="1"
+                         Text="{Binding Product.TechSpecs, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         SpellCheck.IsEnabled="True"
+                         VerticalScrollBarVisibility="Auto"/>
+
+            </Grid>
+
+            <controls:PositiveNegativeButtonsControl Grid.Row="1"
+                                                     Grid.Column="0"
+                                                     Grid.ColumnSpan="2"
+                                                     HasErrors="{Binding Product.HasErrors, UpdateSourceTrigger=PropertyChanged}">
+                <controls:PositiveNegativeButtonsControl.Style>
+                    <Style TargetType="{x:Type controls:PositiveNegativeButtonsControl}">
+                        <Setter Property="ContentOfPositiveButton" Value="Редагувати"/>
+                        <Setter Property="ContentOfNegativeButton" Value="Видалити"/>
+                        <Setter Property="CommandOfPositiveButton" Value="{Binding EditCommand}"/>
+                        <Setter Property="CommandOfNegativeButton" Value="{Binding DeleteCommand}"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="ContentOfPositiveButton" Value="Зберегти"/>
+                                <Setter Property="ContentOfNegativeButton" Value="Скасувати"/>
+                                <Setter Property="CommandOfPositiveButton" Value="{Binding SaveCommand}"/>
+                                <Setter Property="CommandOfNegativeButton" Value="{Binding CancelCommand}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:PositiveNegativeButtonsControl.Style>
+            </controls:PositiveNegativeButtonsControl>
+
+        </Grid>
+
+        <materialDesign:ColorZone HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar IsIndeterminate="True"
+                         Value="0"
+                         Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+        </materialDesign:ColorZone>
+    </Grid>
+</UserControl>

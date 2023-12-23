@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="UI.Views.Address.AddAddressView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:UI.Controls"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="25"
+             mc:Ignorable="d" 
+             d:DesignHeight="656" d:DesignWidth="1280">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBlock}"
+                           BasedOn="{StaticResource MaterialDesignHeadline5TextBlock}">
+                        <Setter Property="Margin" Value="10, 10"/>
+                    </Style>
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBox}"
+                           BasedOn="{StaticResource MaterialDesignTextBoxBase}">
+                        <Setter Property="Margin" Value="10, 5, 0, 0"/>
+                    </Style>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              Margin="10, 0, 0, 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Країна"/>
+
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Text="Область/регіон/штат"/>
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Text="Місто"/>
+
+            <TextBlock Grid.Row="3"
+                       Grid.Column="0"
+                       Text="Адреса"/>
+
+            <TextBlock Grid.Row="4"
+                       Grid.Column="0"
+                       Text="Адреса 2"/>
+
+            <TextBlock Grid.Row="5"
+                       Grid.Column="0"
+                       Text="Поштовий код"/>
+
+            <TextBox Grid.Row="0"
+                     Grid.Column="1"
+                     Text="{Binding Address.Country, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                     MaxLength="2"/>
+
+            <TextBox Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Address.Region, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBox Grid.Row="2"
+                     Grid.Column="1"
+                     Text="{Binding Address.City, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBox Grid.Row="3"
+                     Grid.Column="1"
+                     Text="{Binding Address.AddressLine1, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBox Grid.Row="4"
+                     Grid.Column="1"
+                     Text="{Binding Address.AddressLine2, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBox Grid.Row="5"
+                     Grid.Column="1"
+                     Text="{Binding Address.PostCode, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <controls:PositiveNegativeButtonsControl Grid.Row="1"
+                                                 Grid.Column="0"
+                                                 Grid.ColumnSpan="2"
+                                                 ContentOfPositiveButton="Зберегти"
+                                                 ContentOfNegativeButton="Скасувати"
+                                                 CommandOfPositiveButton="{Binding SaveCommand}"
+                                                 CommandOfNegativeButton="{Binding CancelCommand}"
+                                                 HasErrors="{Binding Address.HasErrors, UpdateSourceTrigger=PropertyChanged}"/>
+    </Grid>
+</UserControl>

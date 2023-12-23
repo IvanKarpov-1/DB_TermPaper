@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="UI.Views.Product.ProductListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UI.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="25"
+             mc:Ignorable="d" 
+             d:DesignHeight="656" d:DesignWidth="1280">
+    <Grid>
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" />
+
+            <DataGrid Grid.Row="0"
+                      Grid.RowSpan="2"
+                      CanUserAddRows="False"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow" 
+                      AutoGenerateColumns="False"
+                      HeadersVisibility="All"
+                      ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}">
+                <DataGrid.Columns>
+
+                    <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                        <DataGridCheckBoxColumn.Header>
+                            <Border Background="Transparent">
+                                <CheckBox IsChecked="{Binding DataContext.IsAllItemsSelected, Source={x:Reference DataContextProxy}}"/>
+                            </Border>
+                        </DataGridCheckBoxColumn.Header>
+
+                        <DataGridCheckBoxColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}"
+                                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.HeaderStyle>
+                    </DataGridCheckBoxColumn>
+
+                    <DataGridTextColumn Binding="{Binding Id}" 
+                                        Header="Id"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTemplateColumn Header="Назва">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                        <Hyperlink Command="{Binding DataContext.NavigateToProductDetailsCommand, Source={x:Reference DataContextProxy}}"
+                                                   CommandParameter="{Binding Id}">
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </Hyperlink>
+                                    </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Binding="{Binding Model}" 
+                                        Header="Модель"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTextColumn Binding="{Binding Code}" 
+                                        Header="Код"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTextColumn Binding="{Binding YearOfLaunch}" 
+                                        Header="Рік запуску у виробництво"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTextColumn Binding="{Binding NumberPerYear}" 
+                                        Header="Кількість за рік"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTextColumn Binding="{Binding SellingPrice}" 
+                                        Header="Відпускна ціна"
+                                        IsReadOnly="True"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+            <Button Grid.Row="1"
+                    Margin="24"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"
+                    Content="{materialDesign:PackIcon Kind=Plus, Size=36}"
+                    Style="{StaticResource MaterialDesignFloatingActionSecondaryLightButton}"
+                    Command="{Binding NavigateToAddProductCommand}"/>
+        </Grid>
+
+        <materialDesign:ColorZone HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar IsIndeterminate="True"
+                         Value="0"
+                         Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+        </materialDesign:ColorZone>
+    </Grid>
+</UserControl>

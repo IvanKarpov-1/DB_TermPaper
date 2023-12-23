@@ -1,0 +1,362 @@
+﻿<UserControl x:Class="UI.Views.Customer.CustomerDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:UI.Converters"
+             xmlns:controls="clr-namespace:UI.Controls"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="25"
+             mc:Ignorable="d" 
+             d:DesignHeight="656" d:DesignWidth="1280">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBlock}"
+                           BasedOn="{StaticResource MaterialDesignHeadline5TextBlock}">
+                        <Setter Property="Margin" Value="10, 10"/>
+                    </Style>
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBox}"
+                           BasedOn="{StaticResource MaterialDesignTextBoxBase}">
+                        <Setter Property="Margin" Value="10, 5, 0, 0"/>
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}"
+                                         Value="True">
+                                <Setter Property="IsReadOnly"
+                                        Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <converters:PassMultiValuesConverter x:Key="PassMultiValuesConverter"/>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0"
+                  Grid.Column="0"
+                  Margin="0, 0, 10, 0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Text="Ім'я"/>
+
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           Text="Email"/>
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           Text="Телефон"/>
+
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         Text="{Binding Customer.Name, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding Customer.Email, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Text="{Binding Customer.Phone, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+                         MaxLength="16"/>
+            </Grid>
+
+            <FrameworkElement Grid.Row="0"
+                              Grid.Column="1"
+                              x:Name="DataContextProxy"
+                              DataContext="{Binding}" />
+
+            <TabControl Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="10"
+                        materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                        materialDesign:ColorZoneAssist.Mode="Dark"
+                        SnapsToDevicePixels="True"
+                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                        TabStripPlacement="Top"
+                        x:Name="TabControl">
+
+                <materialDesign:NavigationRailAssist.FloatingContent>
+                    <Button Margin="8, 8, 8, 18"
+                            Content="{materialDesign:PackIcon Kind=Plus, Size=36}"
+                            CommandParameter="{Binding Customer.Id}">
+                        <Button.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="{x:Type Button}"
+                                       BasedOn="{StaticResource MaterialDesignFloatingActionSecondaryLightButton}">
+
+                                    <Setter Property="Command" Value="{Binding NavigateToAddAddressCommand}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=TabControl}" Value="1">
+                                            <Setter Property="Command" Value="{Binding NavigateToAddOrderCommand}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=TabControl}" Value="2">
+                                            <Setter Property="Command" Value="{Binding NavigateToAddRepairRequestCommand}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ResourceDictionary>
+                        </Button.Resources>
+                    </Button>
+                </materialDesign:NavigationRailAssist.FloatingContent>
+
+                <TabItem Width="225">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Width="24"
+                                                     Height="24"
+                                                     VerticalAlignment="Center"
+                                                     Kind="MapMarkerOutline"/>
+                            <TextBlock VerticalAlignment="Center"
+                                           Text="Адреси"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <DataGrid CanUserAddRows="False"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow" 
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="All"
+                              ItemsSource="{Binding Addresses}">
+                        <DataGrid.Columns>
+
+                            <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridCheckBoxColumn.Header>
+                                    <Border Background="Transparent">
+                                        <CheckBox IsChecked="{Binding DataContext.IsAllAddressesSelected, Source={x:Reference DataContextProxy}}"/>
+                                    </Border>
+                                </DataGridCheckBoxColumn.Header>
+
+                                <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}"
+                                           BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.HeaderStyle>
+                            </DataGridCheckBoxColumn>
+
+                            <DataGridTextColumn Binding="{Binding Id}" 
+                                                Header="Id"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTemplateColumn Header="Адреса">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Hyperlink Command="{Binding DataContext.NavigateToAddressDetailsCommand, Source={x:Reference DataContextProxy}}"
+                                                       CommandParameter="{Binding Id}">
+                                                <TextBlock Text="{Binding AddressString}"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem Width="225">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Width="24"
+                                                     Height="24"
+                                                     VerticalAlignment="Center"
+                                                     Kind="PackageVariantClosed"/>
+                            <TextBlock VerticalAlignment="Center"
+                                           Text="Замовлення"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <DataGrid CanUserAddRows="False"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow" 
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="All"
+                              ItemsSource="{Binding Orders}">
+                        <DataGrid.Columns>
+
+                            <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridCheckBoxColumn.Header>
+                                    <Border Background="Transparent">
+                                        <CheckBox IsChecked="{Binding DataContext.IsAllOrdersSelected, Source={x:Reference DataContextProxy}}"/>
+                                    </Border>
+                                </DataGridCheckBoxColumn.Header>
+
+                                <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}"
+                                           BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.HeaderStyle>
+                            </DataGridCheckBoxColumn>
+
+                            <DataGridTextColumn Binding="{Binding Id}" 
+                                                Header="Id"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTextColumn Binding="{Binding OrderDate}" 
+                                                Header="Дата замовлення"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTextColumn Binding="{Binding DeliveryDate}" 
+                                                Header="Дата доставки"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTemplateColumn Header="Адреса">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Hyperlink Command="{Binding DataContext.NavigateToOrderDetailsCommand, Source={x:Reference DataContextProxy}}">
+                                                <Hyperlink.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource PassMultiValuesConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Path="DataContext.Customer.Id" Source="{x:Reference DataContextProxy}"/>
+                                                    </MultiBinding>
+                                                </Hyperlink.CommandParameter>
+                                                <TextBlock Text="{Binding Address}"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem Width="225">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Width="24"
+                                                     Height="24"
+                                                     VerticalAlignment="Center"
+                                                     Kind="FileDocumentAlertOutline"/>
+                            <TextBlock VerticalAlignment="Center"
+                                           Text="Запити"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <DataGrid CanUserAddRows="False"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow" 
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="All"
+                              ItemsSource="{Binding RepairRequests}">
+                        <DataGrid.Columns>
+
+                            <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridCheckBoxColumn.Header>
+                                    <Border Background="Transparent">
+                                        <CheckBox IsChecked="{Binding DataContext.IsAllRepairRequestsSelected, Source={x:Reference DataContextProxy}}"/>
+                                    </Border>
+                                </DataGridCheckBoxColumn.Header>
+
+                                <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}"
+                                           BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.HeaderStyle>
+                            </DataGridCheckBoxColumn>
+
+                            <DataGridTextColumn Binding="{Binding Id}" 
+                                                Header="Id"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTemplateColumn Header="Статус">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Hyperlink Command="{Binding DataContext.NavigateToRepairRequestDetailsCommand, Source={x:Reference DataContextProxy}}"
+                                                       CommandParameter="{Binding Id}">
+                                                <TextBlock Text="{Binding StatusName}"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Binding="{Binding RequestDate}" 
+                                                Header="Дата запиту"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTextColumn Binding="{Binding Description}" 
+                                                Header="Опис"
+                                                IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+
+            <controls:PositiveNegativeButtonsControl Grid.Row="1"
+                                                     Grid.Column="0"
+                                                     Grid.ColumnSpan="2"
+                                                     HasErrors="{Binding Customer.HasErrors, UpdateSourceTrigger=PropertyChanged}">
+                <controls:PositiveNegativeButtonsControl.Style>
+                    <Style TargetType="{x:Type controls:PositiveNegativeButtonsControl}">
+                        <Setter Property="ContentOfPositiveButton" Value="Редагувати"/>
+                        <Setter Property="ContentOfNegativeButton" Value="Видалити"/>
+                        <Setter Property="CommandOfPositiveButton" Value="{Binding EditCommand}"/>
+                        <Setter Property="CommandOfNegativeButton" Value="{Binding DeleteCommand}"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="ContentOfPositiveButton" Value="Зберегти"/>
+                                <Setter Property="ContentOfNegativeButton" Value="Скасувати"/>
+                                <Setter Property="CommandOfPositiveButton" Value="{Binding SaveCommand}"/>
+                                <Setter Property="CommandOfNegativeButton" Value="{Binding CancelCommand}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:PositiveNegativeButtonsControl.Style>
+            </controls:PositiveNegativeButtonsControl>
+        </Grid>
+
+        <materialDesign:ColorZone HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar IsIndeterminate="True"
+                         Value="0"
+                         Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+        </materialDesign:ColorZone>
+    </Grid>
+</UserControl>

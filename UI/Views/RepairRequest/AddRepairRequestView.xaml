@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="UI.Views.RepairRequest.AddRepairRequestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:UI.Controls"
+             xmlns:converters="clr-namespace:UI.Converters"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="25"
+             mc:Ignorable="d" 
+             d:DesignHeight="656" d:DesignWidth="1280">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBlock}"
+                           BasedOn="{StaticResource MaterialDesignHeadline5TextBlock}">
+                        <Setter Property="Margin" Value="10, 10"/>
+                    </Style>
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <converters:DateOnlyConverter x:Key="DateOnlyConverter"/>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0"
+              Grid.Column="0">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Дата подання заяви"/>
+
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Text="Статус"/>
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Text="Опис"/>
+
+            <DatePicker Grid.Row="0"
+                        Grid.Column="1"
+                        SelectedDate="{Binding RepairRequest.RequestDate, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateOnlyConverter}}"/>
+
+            <ComboBox Grid.Row="1"
+                      Grid.Column="1"
+                      materialDesign:HintAssist.Hint="Статус запиту"
+                      materialDesign:HintAssist.HintOpacity=".26"
+                      materialDesign:TextFieldAssist.HasClearButton="True"
+                      IsEditable="False"
+                      HorizontalAlignment="Stretch" 
+                      Width="Auto"
+                      ItemsSource="{Binding RepairRequestStatuses}"
+                      DisplayMemberPath="DisplayName"
+                      SelectedValuePath="DisplayName"
+                      SelectedValue="{Binding RepairRequest.StatusName}"/>
+
+            <TextBox Grid.Row="2"
+                     Grid.Column="1"
+                     Style="{StaticResource MaterialDesignTextBoxBase}"
+                     Text="{Binding RepairRequest.Description, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+        </Grid>
+
+        <controls:PositiveNegativeButtonsControl Grid.Row="1"
+                                                 Grid.Column="0"
+                                                 Grid.ColumnSpan="2"
+                                                 ContentOfPositiveButton="Зберегти"
+                                                 ContentOfNegativeButton="Скасувати"
+                                                 CommandOfPositiveButton="{Binding SaveCommand}"
+                                                 CommandOfNegativeButton="{Binding CancelCommand}"
+                                                 HasErrors="{Binding RepairRequest.HasErrors, UpdateSourceTrigger=PropertyChanged}"/>
+    </Grid>
+</UserControl>
